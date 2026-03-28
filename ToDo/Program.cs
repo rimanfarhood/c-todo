@@ -1,21 +1,40 @@
-﻿using System.ComponentModel.Design;
-using ToDo.Models;
+﻿using ToDo.Models;
 
 var service = new TodoService();
+ShowMenu();
 
 while (true)
 {
-    ShowMenu();
+
     var choice = Console.ReadLine();
+    Console.WriteLine("Press M to show menu");
+    if (choice?.ToLower() == "m")
+    {
+        ShowMenu();
+        continue;
+    }
 
     switch (choice)
     {
         case "1":
-            Console.WriteLine("Add a Task:");
-            var title = Console.ReadLine();
-            if ( title != null)
+            Console.WriteLine("Add a Task: (Press ENTER to stop):");
+            while (true)
             {
+                var title = Console.ReadLine();
+               
+                if (string.IsNullOrWhiteSpace(title))
+                    break;
+
+                if (title?.ToLower() == "m")
+                {
+                    ShowMenu();
+                    break;
+                }
+                
+                if (title != null)
                 service.Add(title);
+                ShowTodos();
+
             }
             break;
 
@@ -32,8 +51,8 @@ while (true)
             break;
 
         case "5":
-        Console.WriteLine("Enter Id to update task: ");
-        if (int.TryParse(Console.ReadLine(), out int id))
+            Console.WriteLine("Enter Id to update task: ");
+            if (int.TryParse(Console.ReadLine(), out int id))
             {
                 Console.WriteLine("New Title: ");
                 var newTitle = Console.ReadLine();
@@ -62,7 +81,7 @@ void ShowMenu()
 
 void ShowTodos()
 {
-    foreach ( var t in service.GetAll())
+    foreach (var t in service.GetAll())
     {
         Console.WriteLine($"{t.Id}. {t.Title} [{(t.IsDone ? "Done" : "Not Done ")}]");
     }
@@ -76,7 +95,7 @@ void HandleStatus(Func<int, bool> action, string message)
         bool result = action(id);
 
         if (!result)
-        Console.WriteLine("Todo Not found.");
+            Console.WriteLine("Todo Not found.");
     }
 }
 
