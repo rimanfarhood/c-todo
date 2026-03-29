@@ -1,4 +1,5 @@
-﻿using ToDo.Models;
+﻿using System.Reflection;
+using ToDo.Models;
 
 var service = new TodoService();
 ShowMenu();
@@ -8,11 +9,6 @@ while (true)
 
     var choice = Console.ReadLine();
     Console.WriteLine("Press M to show menu");
-    if (choice?.ToLower() == "m")
-    {
-        ShowMenu();
-        continue;
-    }
 
     switch (choice)
     {
@@ -21,29 +17,37 @@ while (true)
             while (true)
             {
                 var title = Console.ReadLine();
-               
-                if (string.IsNullOrWhiteSpace(title))
+
+                if (string.IsNullOrEmpty(title))
                     break;
 
-                if (title?.ToLower() == "m")
+                else if (title?.ToLower() == "m")
                 {
                     ShowMenu();
                     break;
                 }
-                
-                if (title != null)
-                service.Add(title);
-                ShowTodos();
-
+                else if (title != null)
+                {
+                    service.Add(title);
+                }
             }
-            break;
-
-        case "2":
             ShowTodos();
+            break;
+            
+        case "2":
+            if (!service.GetAll().Any())
+            {
+                Console.WriteLine("You Have no Tasks Yet.");
+            }
+            else
+            {
+                ShowTodos();
+            }
             break;
 
         case "3":
             HandleStatus(service.MarkDone, "Enter Id to mark done: ");
+            
             break;
 
         case "4":
