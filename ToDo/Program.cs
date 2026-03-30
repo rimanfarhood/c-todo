@@ -8,32 +8,38 @@ while (true)
 {
 
     var choice = Console.ReadLine();
-    Console.WriteLine("Press M to show menu");
-
+    if (choice !=  "6")
+    {
+        Console.WriteLine("Press M to show menu");
+    }
+    if (choice?.ToLower() == "m")
+    {
+        ShowMenu();
+        continue;
+    }
     switch (choice)
     {
         case "1":
-            Console.WriteLine("Add a Task: (Press ENTER to stop):");
+            Console.WriteLine("Add a Task:");
             while (true)
             {
                 var title = Console.ReadLine();
 
-                if (string.IsNullOrEmpty(title))
-                    break;
-
-                else if (title?.ToLower() == "m")
+                if (title?.ToLower() == "m")
                 {
                     ShowMenu();
                     break;
                 }
-                else if (title != null)
+                if (title != null)
                 {
                     service.Add(title);
+                    ShowTodos();
                 }
+
+
             }
-            ShowTodos();
             break;
-            
+
         case "2":
             if (!service.GetAll().Any())
             {
@@ -47,11 +53,12 @@ while (true)
 
         case "3":
             HandleStatus(service.MarkDone, "Enter Id to mark done: ");
-            
+            ShowTodos();
             break;
 
         case "4":
             HandleStatus(service.Delete, "Enter Id to delete task: ");
+            ShowTodos();
             break;
 
         case "5":
@@ -65,6 +72,7 @@ while (true)
                     service.Update(id, newTitle);
                 }
             }
+            ShowTodos();
             break;
 
         case "6":
