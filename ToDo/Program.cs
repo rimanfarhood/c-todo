@@ -43,7 +43,9 @@ while (true)
                         dueDate = parsed;
                     }
                     service.Add(title, dueDate);
+                    ShowTodos();
                     Console.WriteLine("Task added! Add another task or type 'm' to go back to menu:");
+                    
                 }
             }
             break;
@@ -123,7 +125,7 @@ void ShowTodos()
 {
     foreach (var t in service.GetAll())
     {
-        Console.WriteLine($"({t.Id}) Due Date: {t.DueDate?.ToString("yyyy-mm-dd")}\n\t\t{t.Title} \t {(t.IsDone ? "✅" : "❌")} \n");
+        Console.WriteLine($"({t.Id}) Due Date: {t.DueDate?.ToString("yyyy-mm-dd")}\t\t {(t.IsDone ? "✅" : "❌")} \n\t\t – {t.Title}\n");
     }
 }
 
