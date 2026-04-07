@@ -4,7 +4,17 @@ using ToDo.Models;
 
 public class FileStorage
 {
-    private readonly string filePath = "todos.json";
+    private readonly string filePath;
+
+    public FileStorage()
+    {
+        var projectFilePath = Path.GetFullPath(
+            Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "todos.json"));
+
+        filePath = File.Exists(projectFilePath)
+            ? projectFilePath
+            : Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "todos.json"));
+    }
 
     public List<Todo> Load()
     {

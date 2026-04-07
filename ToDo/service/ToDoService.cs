@@ -32,7 +32,12 @@ public class TodoService
         storage.Save(todos);
         return true;
     }
-
+    public bool DeleteAll()
+    {
+        todos.Clear();
+        storage.Save(todos);
+        return true;
+    }
     public bool Update(int id, string newTitle)
     {
         var todo = FindById(id);
@@ -42,6 +47,7 @@ public class TodoService
         if (result) storage.Save(todos);
         return result;
     }
+
     public bool MarkDone(int id)
     {
         try
