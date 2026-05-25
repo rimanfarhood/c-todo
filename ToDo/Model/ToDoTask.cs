@@ -2,10 +2,10 @@ namespace ToDo.Models
 {
     public class Todo
     {
-        public int Id { get; }
-        public string Title { get; private set; }
-        public bool IsDone { get; private set; }
-        public DateTime? DueDate { get; private set;}
+        public int Id { get; set; }
+        public string Title { get;  set; }
+        public bool IsDone { get; set; }
+        public DateTime? DueDate { get; set;}
         public Todo(int id, string title, DateTime? dueDate = null)
         {
             if (string.IsNullOrEmpty(title))

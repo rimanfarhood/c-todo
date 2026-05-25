@@ -2,6 +2,8 @@
 using System.Security;
 using ToDo.Models;
 
+
+
 var service = new TodoService();
 ShowMenu();
 
@@ -9,7 +11,7 @@ while (true)
 {
 
     var choice = Console.ReadLine();
-    if (choice !=  "6")
+    if (choice != "6")
     {
         Console.WriteLine("\nPress M to show menu\n");
     }
@@ -21,92 +23,181 @@ while (true)
     switch (choice)
     {
         case "1":
-            Console.WriteLine("Add a Task:\n");
-            while (true)
+
+            Console.WriteLine("Add Task:");
+
+            string? title = Console.ReadLine();
+
+            if (string.IsNullOrWhiteSpace(title))
+                break;
+
+            Console.WriteLine(
+                "Enter due date (yyyy-MM-dd) or press Enter:"
+            );
+
+            string? input = Console.ReadLine();
+
+            DateTime? dueDate = null;
+
+            if (!string.IsNullOrWhiteSpace(input)
+                && DateTime.TryParse(input, out var parsed))
             {
-                var title = Console.ReadLine();
-
-                if (title?.ToLower() == "m")
-                {
-                    ShowMenu();
-                    break;
-                }
-                if (title != null && !string.IsNullOrWhiteSpace(title))
-                {
-                    Console.WriteLine("\nEnter due date (yyyy-MM-dd) (optional, press Enter to skip)");
-                    var input = Console.ReadLine();
-                    DateTime? dueDate = null;
-
-                    if (!string.IsNullOrWhiteSpace(input)
-                    && DateTime.TryParse(input, out var parsed))
-                    {
-                        dueDate = parsed;
-                    }
-                    service.Add(title, dueDate);
-                    ShowTodos();
-                    Console.WriteLine("Task added! Add another task or type 'm' to go back to menu:");
-                    
-                }
+                dueDate = parsed;
             }
+
+            service.Add(title, dueDate);
+
+            Console.WriteLine("Task added!");
+
             break;
 
         case "2":
-            if (!service.GetAll().Any())
-            {
-                Console.WriteLine("You Have no Tasks Yet.\n");
-                ShowMenu();
-            }
-            else
-            {
-                ShowTodos();
-                Console.WriteLine("Type 'm' to go back to the menu");
-            }
+
+            ShowTodos();
+
             break;
 
         case "3":
-            HandleStatus(service.MarkDone, "Enter Id to mark done: ");
+
+            Console.WriteLine("Enter Id:");
+
+            if (int.TryParse(Console.ReadLine(), out int doneId))
+            {
+                service.MarkDone(doneId);
+            }
+
             ShowTodos();
-            ShowMenu();
+
             break;
 
         case "4":
-            Console.WriteLine("Enter Id to delete task or type 'all' to delete all tasks: ");
-            var deleteInput = Console.ReadLine();
-            if (deleteInput?.Trim().ToLower() == "all")
+
+            Console.WriteLine("Enter Id to delete:");
+
+            if (int.TryParse(Console.ReadLine(), out int deleteId))
             {
-                service.DeleteAll();
-                Console.WriteLine("\nAll tasks are deleted");
-                ShowMenu();
+                service.Delete(deleteId);
             }
-            else if (int.TryParse(deleteInput, out int deleteId))
-            {
-                if (!service.Delete(deleteId))
-                    Console.WriteLine("Todo Not found.");
-            }
-            else
-            {
-                Console.WriteLine("Invalid input. Type a task id or 'all'.");
-            }
+
             ShowTodos();
+
             break;
 
         case "5":
-            Console.WriteLine("Enter Id to update task: ");
-            if (int.TryParse(Console.ReadLine(), out int id))
+
+            Console.WriteLine("Enter Id to update:");
+
+            if (int.TryParse(Console.ReadLine(), out int updateId))
             {
-                Console.WriteLine("New Title: ");
-                var newTitle = Console.ReadLine();
-                if (newTitle != null)
+                Console.WriteLine("New Title:");
+
+                string? newTitle = Console.ReadLine();
+
+                if (!string.IsNullOrWhiteSpace(newTitle))
                 {
-                    service.Update(id, newTitle);
+                    service.Update(updateId, newTitle);
                 }
             }
+
             ShowTodos();
+
             break;
 
         case "6":
+
             return;
+
     }
+
+    // switch (choice)
+    // {
+    //     case "1":
+    //         Console.WriteLine("Add a Task:\n");
+    //         while (true)
+    //         {
+    //             var title = Console.ReadLine();
+
+    //             if (title?.ToLower() == "m")
+    //             {
+    //                 ShowMenu();
+    //                 break;
+    //             }
+    //             if (title != null && !string.IsNullOrWhiteSpace(title))
+    //             {
+    //                 Console.WriteLine("\nEnter due date (yyyy-MM-dd) (optional, press Enter to skip)");
+    //                 var input = Console.ReadLine();
+    //                 DateTime? dueDate = null;
+
+    //                 if (!string.IsNullOrWhiteSpace(input)
+    //                 && DateTime.TryParse(input, out var parsed))
+    //                 {
+    //                     dueDate = parsed;
+    //                 }
+    //                 service.Add(title, dueDate);
+    //                 ShowTodos();
+    //                 Console.WriteLine("Task added! Add another task or type 'm' to go back to menu:");
+
+    //             }
+    //         }
+    //         break;
+
+    //     case "2":
+    //         if (!service.GetAll().Any())
+    //         {
+    //             Console.WriteLine("You Have no Tasks Yet.\n");
+    //             ShowMenu();
+    //         }
+    //         else
+    //         {
+    //             ShowTodos();
+    //             Console.WriteLine("Type 'm' to go back to the menu");
+    //         }
+    //         break;
+
+    //     case "3":
+    //         HandleStatus(service.MarkDone, "Enter Id to mark done: ");
+    //         ShowTodos();
+    //         ShowMenu();
+    //         break;
+
+    //     case "4":
+    //         Console.WriteLine("Enter Id to delete task or type 'all' to delete all tasks: ");
+    //         var deleteInput = Console.ReadLine();
+    //         if (deleteInput?.Trim().ToLower() == "all")
+    //         {
+    //             service.DeleteAll();
+    //             Console.WriteLine("\nAll tasks are deleted");
+    //             ShowMenu();
+    //         }
+    //         else if (int.TryParse(deleteInput, out int deleteId))
+    //         {
+    //             if (!service.Delete(deleteId))
+    //                 Console.WriteLine("Todo Not found.");
+    //         }
+    //         else
+    //         {
+    //             Console.WriteLine("Invalid input. Type a task id or 'all'.");
+    //         }
+    //         ShowTodos();
+    //         break;
+
+    //     case "5":
+    //         Console.WriteLine("Enter Id to update task: ");
+    //         if (int.TryParse(Console.ReadLine(), out int id))
+    //         {
+    //             Console.WriteLine("New Title: ");
+    //             var newTitle = Console.ReadLine();
+    //             if (newTitle != null)
+    //             {
+    //                 service.Update(id, newTitle);
+    //             }
+    //         }
+    //         ShowTodos();
+    //         break;
+
+    //     case "6":
+    //         return;
+    // }
 }
 
 
@@ -129,15 +220,15 @@ void ShowTodos()
     }
 }
 
-void HandleStatus(Func<int, bool> action, string message)
-{
-    Console.WriteLine(message);
-    if (int.TryParse(Console.ReadLine(), out int id))
-    {
-        bool result = action(id);
+// void HandleStatus(Func<int, bool> action, string message)
+// {
+//     Console.WriteLine(message);
+//     if (int.TryParse(Console.ReadLine(), out int id))
+//     {
+//         bool result = action(id);
 
-        if (!result)
-            Console.WriteLine("Todo Not found.");
-    }
-}
+//         if (!result)
+//             Console.WriteLine("Todo Not found.");
+//     }
+// }
 
